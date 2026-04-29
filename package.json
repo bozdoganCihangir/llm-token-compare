@@ -1,6 +1,6 @@
 {
   "name": "llm-token-compare",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Count tokens for the same text across GPT-4o, Claude, Gemini, and Llama tokenizers, side-by-side — with cost translation and visualization.",
   "keywords": [
     "llm",
