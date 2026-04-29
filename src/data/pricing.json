@@ -1,0 +1,59 @@
+{
+  "as_of": "2026-04-29",
+  "currency": "USD",
+  "notes": "Input/output USD per 1,000,000 tokens. Llama models marked self_hosted have $0 (local inference). Update via npm run sync-pricing.",
+  "models": {
+    "gpt-4o": {
+      "input_per_1m": 2.5,
+      "output_per_1m": 10.0,
+      "context_window": 128000
+    },
+    "gpt-4-turbo": {
+      "input_per_1m": 10.0,
+      "output_per_1m": 30.0,
+      "context_window": 128000
+    },
+    "gpt-3.5-turbo": {
+      "input_per_1m": 0.5,
+      "output_per_1m": 1.5,
+      "context_window": 16385
+    },
+    "claude-3.5-sonnet": {
+      "input_per_1m": 3.0,
+      "output_per_1m": 15.0,
+      "context_window": 200000
+    },
+    "claude-3-opus": {
+      "input_per_1m": 15.0,
+      "output_per_1m": 75.0,
+      "context_window": 200000
+    },
+    "claude-3-haiku": {
+      "input_per_1m": 0.25,
+      "output_per_1m": 1.25,
+      "context_window": 200000
+    },
+    "gemini-1.5-pro": {
+      "input_per_1m": 1.25,
+      "output_per_1m": 5.0,
+      "context_window": 2000000
+    },
+    "gemini-1.5-flash": {
+      "input_per_1m": 0.075,
+      "output_per_1m": 0.3,
+      "context_window": 1000000
+    },
+    "llama-3.1": {
+      "input_per_1m": 0,
+      "output_per_1m": 0,
+      "context_window": 128000,
+      "self_hosted": true
+    },
+    "llama-3": {
+      "input_per_1m": 0,
+      "output_per_1m": 0,
+      "context_window": 8192,
+      "self_hosted": true
+    }
+  }
+}

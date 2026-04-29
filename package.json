@@ -1,0 +1,91 @@
+{
+  "name": "llm-token-compare",
+  "version": "0.1.0",
+  "description": "Count tokens for the same text across GPT-4o, Claude, Gemini, and Llama tokenizers, side-by-side — with cost translation and visualization.",
+  "keywords": [
+    "llm",
+    "tokenizer",
+    "tokens",
+    "openai",
+    "anthropic",
+    "gemini",
+    "llama",
+    "gpt",
+    "claude",
+    "cost",
+    "ai",
+    "prompt-engineering"
+  ],
+  "license": "MIT",
+  "author": "Cihangir Bozdogan",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./openai": {
+      "types": "./dist/openai.d.ts",
+      "import": "./dist/openai.js",
+      "require": "./dist/openai.cjs"
+    },
+    "./anthropic": {
+      "types": "./dist/anthropic.d.ts",
+      "import": "./dist/anthropic.js",
+      "require": "./dist/anthropic.cjs"
+    },
+    "./google": {
+      "types": "./dist/google.d.ts",
+      "import": "./dist/google.js",
+      "require": "./dist/google.cjs"
+    },
+    "./meta": {
+      "types": "./dist/meta.d.ts",
+      "import": "./dist/meta.js",
+      "require": "./dist/meta.cjs"
+    }
+  },
+  "bin": {
+    "llm-token-compare": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check src test scripts",
+    "format": "biome format --write src test scripts",
+    "bench": "tsx scripts/bench.ts",
+    "sync-pricing": "tsx scripts/sync-pricing.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@anthropic-ai/tokenizer": "^0.0.4",
+    "js-tiktoken": "^1.0.15",
+    "llama3-tokenizer-js": "^1.2.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/node": "^22.10.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "cac": "^6.7.14",
+    "picocolors": "^1.1.1",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

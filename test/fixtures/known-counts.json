@@ -1,0 +1,60 @@
+{
+  "_doc": "Hand-verified token counts. Regenerate by running scripts/dump-counts (manual) and checking against provider tools when in doubt.",
+  "cases": [
+    {
+      "name": "empty",
+      "text": "",
+      "counts": {
+        "gpt-4o": 0,
+        "gpt-3.5-turbo": 0,
+        "claude-3.5-sonnet": 0,
+        "gemini-1.5-flash": 0,
+        "llama-3.1": 0
+      }
+    },
+    {
+      "name": "hello",
+      "text": "hello world",
+      "counts": {
+        "gpt-4o": 2,
+        "gpt-3.5-turbo": 2,
+        "claude-3.5-sonnet": 2,
+        "gemini-1.5-flash": 2,
+        "llama-3.1": 2
+      }
+    },
+    {
+      "name": "emoji",
+      "text": "I love AI 🚀🤖",
+      "counts": {
+        "gpt-4o": 7,
+        "gpt-3.5-turbo": 9,
+        "claude-3.5-sonnet": 9,
+        "gemini-1.5-flash": 9,
+        "llama-3.1": 9
+      }
+    },
+    {
+      "name": "pythonSnippet",
+      "text": "def add(a, b):\n    return a + b\n",
+      "counts": {
+        "gpt-4o": 12,
+        "gpt-3.5-turbo": 12,
+        "claude-3.5-sonnet": 13,
+        "gemini-1.5-flash": 12,
+        "llama-3.1": 12
+      }
+    },
+    {
+      "name": "korean",
+      "text": "안녕하세요",
+      "counts": {
+        "gpt-4o": 2,
+        "gpt-3.5-turbo": 5,
+        "claude-3.5-sonnet": 7,
+        "gemini-1.5-flash": 5,
+        "llama-3.1": 2
+      }
+    }
+  ]
+}
