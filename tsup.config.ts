@@ -15,6 +15,7 @@ export default defineConfig([
     sourcemap: false,
     target: 'node18',
     treeshake: true,
+    external: ['picocolors'],
   },
   {
     entry: { cli: 'src/cli.ts' },

@@ -74,4 +74,42 @@ describe('format/visualization', () => {
     const out = renderVisualization({ ids: [1, 2], pieces: ['ab', 'cd'] }, { color: false });
     expect(out).toBe('[ab][cd]');
   });
+
+  it('renderVisualization truncates with ellipsis past maxPieces', () => {
+    const ids = Array.from({ length: 5 }, (_, i) => i);
+    const pieces = ['a', 'b', 'c', 'd', 'e'];
+    const out = renderVisualization({ ids, pieces }, { color: false, maxPieces: 3 });
+    expect(out).toBe('[a][b][c] …');
+  });
+
+  it('aligns colored table columns by visible width (ANSI-aware)', async () => {
+    const r = await compare('hi', { models: ['gpt-4o', 'llama-3.1'] });
+    const out = formatTable(r, { color: true });
+    const lines = out.split('\n');
+    expect(lines.length).toBe(2 + r.length);
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: stripping ANSI escape sequences
+    const stripAnsi = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, '');
+    const widths = lines.map((l) => stripAnsi(l).length);
+    expect(widths.every((w) => w === widths[0])).toBe(true);
+  });
+});
+
+describe('format/markdown edge cases', () => {
+  it('returns a placeholder for empty results', () => {
+    expect(formatMarkdown([])).toBe('_No results_');
+  });
+
+  it('includes a $/mo column when costAtRate is present', async () => {
+    const r = await compare('hi', { models: ['gpt-4o'], callsPerMonth: 1000 });
+    const md = formatMarkdown(r);
+    expect(md).toContain('$/mo');
+  });
+});
+
+describe('format/json edge cases', () => {
+  it('non-pretty mode emits a single line', async () => {
+    const r = await compare('hi', { models: ['gpt-4o'] });
+    const out = formatJson({ results: r }, false);
+    expect(out.includes('\n')).toBe(false);
+  });
 });

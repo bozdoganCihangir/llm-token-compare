@@ -55,7 +55,7 @@ export async function cheapestThatFits(
     costPer1kCalls: winner.costPer1kCalls,
     contextUsedPct: winner.contextUsedPct,
   };
-  if (mostExpensive.id !== winner.id && winner.costPer1kCalls > 0) {
+  if (mostExpensive.id !== winner.id && mostExpensive.costPer1kCalls > 0) {
     result.savingsVs = {
       model: mostExpensive.id,
       costPer1kCalls: mostExpensive.costPer1kCalls,

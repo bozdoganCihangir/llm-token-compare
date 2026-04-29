@@ -15,6 +15,21 @@ describe('tokenizers/anthropic', () => {
     expect(r.pieces.length).toBe(r.ids.length);
   });
 
+  it('count equals tokenize().ids.length (consistency)', () => {
+    for (const c of known.cases) {
+      const c1 = count(c.text, 'claude-3.5-sonnet');
+      const c2 = tokenize(c.text, 'claude-3.5-sonnet').ids.length;
+      expect(c1).toBe(c2);
+    }
+  });
+
+  it('cached tokenizer survives repeated tokenize+count calls', () => {
+    for (let i = 0; i < 5; i++) {
+      expect(count('hello world', 'claude-3.5-sonnet')).toBeGreaterThan(0);
+      expect(tokenize('hello world', 'claude-3-haiku').ids.length).toBeGreaterThan(0);
+    }
+  });
+
   it('rejects non-Anthropic model id', () => {
     expect(() => count('hi', 'gpt-4o')).toThrow(/Not an Anthropic/);
   });

@@ -8,8 +8,6 @@ const VALID: Record<GoogleModelId, true> = {
   'gemini-1.5-flash': true,
 };
 
-const CALIBRATION = 0.97;
-
 let enc: Tiktoken | null = null;
 function getProxy(): Tiktoken {
   if (!enc) enc = getEncoding('cl100k_base');
@@ -24,8 +22,7 @@ function asGoogle(model: ModelId | undefined): GoogleModelId {
 
 export function count(text: string, model?: ModelId): number {
   asGoogle(model);
-  const raw = getProxy().encode(text).length;
-  return Math.max(0, Math.round(raw * CALIBRATION));
+  return getProxy().encode(text).length;
 }
 
 export function tokenize(text: string, model?: ModelId): TokenizeResult {

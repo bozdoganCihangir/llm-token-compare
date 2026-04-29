@@ -97,4 +97,33 @@ describe('cli', () => {
     expect(r.status).not.toBe(0);
     expect(r.stderr).toContain('Unknown model');
   });
+
+  it('--all expands to ten models', () => {
+    const r = run(['hello', '--all', '--json']);
+    expect(r.status).toBe(0);
+    const parsed = JSON.parse(r.stdout);
+    expect(parsed.results.length).toBe(10);
+  });
+
+  it('--calls-per-month populates costAtRate', () => {
+    const r = run(['hello world', '--calls-per-month', '1m', '--json']);
+    expect(r.status).toBe(0);
+    const parsed = JSON.parse(r.stdout);
+    const gpt = parsed.results.find(
+      (x: { model: string; costAtRate?: number }) => x.model === 'gpt-4o',
+    );
+    expect(gpt?.costAtRate).toBeGreaterThan(0);
+  });
+
+  it('rejects invalid --calls-per-month', () => {
+    const r = run(['hi', '--calls-per-month', 'not-a-number', '--no-color']);
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toContain('Invalid --calls-per-month');
+  });
+
+  it('cheapest --exact restricts to families with exact tokenizers', () => {
+    const r = run(['cheapest', 'hello world', '--exact']);
+    expect(r.status).toBe(0);
+    expect(r.stdout).toMatch(/Cheapest:\s+gpt-/);
+  });
 });

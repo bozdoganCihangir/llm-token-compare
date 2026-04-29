@@ -45,4 +45,18 @@ describe('compare', () => {
     const t = await tokenize('hello world', 'gpt-4o');
     expect(t.pieces.length).toBe(2);
   });
+
+  it('handles empty string without dividing by zero', async () => {
+    const r = await compare('', { models: ['gpt-4o'] });
+    expect(r[0]?.tokens).toBe(0);
+    expect(r[0]?.characters).toBe(0);
+    expect(r[0]?.charsPerToken).toBe(0);
+    expect(r[0]?.contextUsedPct).toBe(0);
+    expect(r[0]?.costPer1kCalls).toBe(0);
+  });
+
+  it('counts characters by code points (emoji = 1)', async () => {
+    const r = await compare('🚀', { models: ['gpt-4o'] });
+    expect(r[0]?.characters).toBe(1);
+  });
 });

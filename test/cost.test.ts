@@ -46,4 +46,23 @@ describe('cheapestThatFits', () => {
     const r = await cheapestThatFits('hello', { needContext: 1_500_000 });
     expect(r.model).toBe('gemini-1.5-pro');
   });
+
+  it('omits savingsVs when only one candidate survives constraints', async () => {
+    const r = await cheapestThatFits('hello', { needContext: 1_500_000 });
+    expect(r.model).toBe('gemini-1.5-pro');
+    expect(r.savingsVs).toBeUndefined();
+  });
+
+  it('throws when needContext exceeds every paid model', async () => {
+    await expect(cheapestThatFits('hello', { needContext: 10_000_000 })).rejects.toThrow(
+      /No model fits/,
+    );
+  });
+
+  it('savingsVs.pct is bounded in (0, 100)', async () => {
+    const r = await cheapestThatFits('hello world');
+    expect(r.savingsVs).toBeDefined();
+    expect(r.savingsVs?.pct).toBeGreaterThan(0);
+    expect(r.savingsVs?.pct).toBeLessThan(100);
+  });
 });

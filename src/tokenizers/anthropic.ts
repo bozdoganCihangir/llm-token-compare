@@ -1,4 +1,4 @@
-import { countTokens, getTokenizer } from '@anthropic-ai/tokenizer';
+import { getTokenizer } from '@anthropic-ai/tokenizer';
 import type { ModelId, TokenizeResult } from '../core/types.js';
 
 type AnthropicModelId = 'claude-3.5-sonnet' | 'claude-3-opus' | 'claude-3-haiku';
@@ -11,6 +11,13 @@ const VALID: Record<AnthropicModelId, true> = {
 
 const decoder = new TextDecoder('utf-8');
 
+type AnthropicTokenizer = ReturnType<typeof getTokenizer>;
+let cached: AnthropicTokenizer | null = null;
+function getCached(): AnthropicTokenizer {
+  if (!cached) cached = getTokenizer();
+  return cached;
+}
+
 function asAnthropic(model: ModelId | undefined): AnthropicModelId {
   const m = model ?? 'claude-3.5-sonnet';
   if (m in VALID) return m as AnthropicModelId;
@@ -19,15 +26,14 @@ function asAnthropic(model: ModelId | undefined): AnthropicModelId {
 
 export function count(text: string, model?: ModelId): number {
   asAnthropic(model);
-  return countTokens(text);
+  return getCached().encode(text, 'all').length;
 }
 
 export function tokenize(text: string, model?: ModelId): TokenizeResult {
   asAnthropic(model);
-  const tok = getTokenizer();
-  const encoded = tok.encode(text.normalize('NFKC'), 'all');
+  const tok = getCached();
+  const encoded = tok.encode(text, 'all');
   const ids = Array.from(encoded);
   const pieces = ids.map((id) => decoder.decode(tok.decode_single_token_bytes(id)));
-  tok.free();
   return { ids, pieces };
 }

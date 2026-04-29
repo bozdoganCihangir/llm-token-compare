@@ -27,4 +27,32 @@ describe('findings', () => {
     const fs = findings(results, 'hello world');
     expect(fs.some((f) => f.text.includes('Non-ASCII'))).toBe(false);
   });
+
+  it('warns when context usage exceeds 50%', () => {
+    const synthetic = [
+      {
+        model: 'llama-3' as const,
+        family: 'meta' as const,
+        encoding: 'tiktoken-llama3',
+        tokens: 6000,
+        characters: 24000,
+        charsPerToken: 4,
+        contextWindow: 8192,
+        contextUsedPct: 73.2,
+        costPer1kCalls: 0,
+        accuracy: 'exact' as const,
+        selfHosted: true,
+      },
+    ];
+    const fs = findings(synthetic);
+    expect(fs.some((f) => f.level === 'warn' && f.text.includes('llama-3'))).toBe(true);
+  });
+
+  it('reports an efficiency finding with chars/token', async () => {
+    const results = await compare('hello world from a friendly planet', {
+      models: ['gpt-4o', 'claude-3.5-sonnet'],
+    });
+    const fs = findings(results);
+    expect(fs.some((f) => f.text.startsWith('Most efficient:'))).toBe(true);
+  });
 });
