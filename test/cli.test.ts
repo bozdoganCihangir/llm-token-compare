@@ -124,7 +124,9 @@ describe('cli', () => {
   it('cheapest --exact restricts to families with exact tokenizers', () => {
     const r = run(['cheapest', 'hello world', '--exact']);
     expect(r.status).toBe(0);
-    expect(r.stdout).toMatch(/Cheapest:\s+gpt-/);
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: stripping ANSI escape sequences
+    const stripped = r.stdout.replace(/\x1b\[[0-9;]*m/g, '');
+    expect(stripped).toMatch(/Cheapest:\s+gpt-/);
   });
 
   it('cheapest rejects non-numeric --context instead of silently ignoring it', () => {
