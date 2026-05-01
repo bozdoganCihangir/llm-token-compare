@@ -140,7 +140,7 @@ This is the part most token tools quietly fudge. The truth:
 | OpenAI | [`js-tiktoken`](https://github.com/dqbd/tiktoken/tree/main/js) (BPE) | **Exact.** Identical to OpenAI's reference tokenizer for `cl100k_base` and `o200k_base`. |
 | Meta (Llama 3 / 3.1) | [`llama3-tokenizer-js`](https://github.com/belladoreai/llama3-tokenizer-js) | **Exact.** Vocab baked into the package. BOS/EOS suppressed for fair comparison. |
 | Anthropic (Claude 3 / 3.5) | [`@anthropic-ai/tokenizer`](https://github.com/anthropics/anthropic-tokenizer-typescript) (Claude-2 BPE) | **Approx.** Anthropic publishes no local tokenizer for Claude 3+. The Claude-2 tokenizer is the best local approximation; expect ±10% drift on English, more on multilingual content. |
-| Google (Gemini 1.5) | `cl100k_base` × 0.97 calibration constant | **Approx.** Google publishes no local tokenizer at all. We use OpenAI's cl100k as a proxy with an empirical calibration factor; expect ±15% drift. |
+| Google (Gemini 1.5) | `cl100k_base` proxy | **Approx.** Google publishes no local tokenizer at all. We use OpenAI's cl100k as a proxy; expect ±15% drift on English content and larger drift on multilingual text. |
 
 Every output (table, JSON, markdown, HTML) tags each row with `accuracy: 'exact' | 'approx'`. The auto-generated findings will flag a non-ASCII text warning when calibration drift is most likely.
 

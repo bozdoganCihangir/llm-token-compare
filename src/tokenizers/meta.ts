@@ -12,7 +12,7 @@ const ENCODE_OPTS = { bos: false, eos: false } as const;
 
 function asMeta(model: ModelId | undefined): MetaModelId {
   const m = model ?? 'llama-3.1';
-  if (m in VALID) return m as MetaModelId;
+  if (Object.hasOwn(VALID, m)) return m as MetaModelId;
   throw new Error(`Not a Meta/Llama model: "${m}"`);
 }
 

@@ -83,11 +83,10 @@ export const DEFAULT_MODELS: ModelId[] = [
 ];
 
 export function getModel(id: ModelId): ModelInfo {
-  const info = models[id];
-  if (!info) throw new Error(`Unknown model: "${id}"`);
-  return info;
+  if (!Object.hasOwn(models, id)) throw new Error(`Unknown model: "${id}"`);
+  return models[id];
 }
 
 export function isModelId(id: string): id is ModelId {
-  return id in models;
+  return Object.hasOwn(models, id);
 }

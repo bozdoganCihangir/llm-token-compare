@@ -33,4 +33,11 @@ describe('tokenizers/anthropic', () => {
   it('rejects non-Anthropic model id', () => {
     expect(() => count('hi', 'gpt-4o')).toThrow(/Not an Anthropic/);
   });
+
+  it('rejects Object.prototype-shaped ids (prototype-chain guard)', () => {
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    expect(() => count('hi', '__proto__' as any)).toThrow(/Not an Anthropic/);
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    expect(() => count('hi', 'toString' as any)).toThrow(/Not an Anthropic/);
+  });
 });

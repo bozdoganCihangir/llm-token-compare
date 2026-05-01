@@ -16,7 +16,7 @@ function getProxy(): Tiktoken {
 
 function asGoogle(model: ModelId | undefined): GoogleModelId {
   const m = model ?? 'gemini-1.5-flash';
-  if (m in VALID) return m as GoogleModelId;
+  if (Object.hasOwn(VALID, m)) return m as GoogleModelId;
   throw new Error(`Not a Google/Gemini model: "${m}"`);
 }
 

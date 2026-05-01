@@ -126,4 +126,16 @@ describe('cli', () => {
     expect(r.status).toBe(0);
     expect(r.stdout).toMatch(/Cheapest:\s+gpt-/);
   });
+
+  it('cheapest rejects non-numeric --context instead of silently ignoring it', () => {
+    const r = run(['cheapest', 'hello world', '--context', 'not-a-number']);
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toContain('Invalid --context');
+  });
+
+  it('rejects model ids that match Object.prototype keys', () => {
+    const r = run(['hi', '--models', '__proto__', '--no-color']);
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toContain('Unknown model');
+  });
 });

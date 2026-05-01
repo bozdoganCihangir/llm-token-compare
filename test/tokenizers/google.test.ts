@@ -30,4 +30,11 @@ describe('tokenizers/google', () => {
   it('rejects non-Google model id', () => {
     expect(() => count('hi', 'gpt-4o')).toThrow(/Not a Google/);
   });
+
+  it('rejects Object.prototype-shaped ids (prototype-chain guard)', () => {
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    expect(() => count('hi', '__proto__' as any)).toThrow(/Not a Google/);
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    expect(() => count('hi', 'toString' as any)).toThrow(/Not a Google/);
+  });
 });

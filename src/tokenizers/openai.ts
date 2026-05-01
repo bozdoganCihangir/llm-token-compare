@@ -23,7 +23,7 @@ function getEnc(model: OpenAIModelId): Tiktoken {
 
 function asOpenAI(model: ModelId | undefined): OpenAIModelId {
   const m = model ?? 'gpt-4o';
-  if (m in ENCODING_FOR) return m as OpenAIModelId;
+  if (Object.hasOwn(ENCODING_FOR, m)) return m as OpenAIModelId;
   throw new Error(`Not an OpenAI model: "${m}"`);
 }
 

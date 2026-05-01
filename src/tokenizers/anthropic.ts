@@ -20,7 +20,7 @@ function getCached(): AnthropicTokenizer {
 
 function asAnthropic(model: ModelId | undefined): AnthropicModelId {
   const m = model ?? 'claude-3.5-sonnet';
-  if (m in VALID) return m as AnthropicModelId;
+  if (Object.hasOwn(VALID, m)) return m as AnthropicModelId;
   throw new Error(`Not an Anthropic model: "${m}"`);
 }
 

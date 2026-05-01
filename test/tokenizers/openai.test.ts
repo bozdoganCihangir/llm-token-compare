@@ -23,6 +23,15 @@ describe('tokenizers/openai', () => {
     expect(() => count('hi', 'claude-3-haiku')).toThrow(/Not an OpenAI/);
   });
 
+  it('rejects Object.prototype-shaped ids (prototype-chain guard)', () => {
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    expect(() => count('hi', '__proto__' as any)).toThrow(/Not an OpenAI/);
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    expect(() => count('hi', 'toString' as any)).toThrow(/Not an OpenAI/);
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    expect(() => count('hi', 'constructor' as any)).toThrow(/Not an OpenAI/);
+  });
+
   it('defaults to gpt-4o when model omitted', () => {
     expect(count('hello world')).toBe(2);
   });

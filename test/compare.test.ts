@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { compare, count, tokenize } from '../src/core/compare.js';
+import { getModel, isModelId } from '../src/data/models.js';
 
 describe('compare', () => {
   it('returns one row per default model', async () => {
@@ -58,5 +59,31 @@ describe('compare', () => {
   it('counts characters by code points (emoji = 1)', async () => {
     const r = await compare('🚀', { models: ['gpt-4o'] });
     expect(r[0]?.characters).toBe(1);
+  });
+});
+
+describe('model registry validation', () => {
+  it('isModelId rejects Object.prototype keys', () => {
+    expect(isModelId('__proto__')).toBe(false);
+    expect(isModelId('toString')).toBe(false);
+    expect(isModelId('constructor')).toBe(false);
+    expect(isModelId('hasOwnProperty')).toBe(false);
+  });
+
+  it('isModelId still accepts real model ids', () => {
+    expect(isModelId('gpt-4o')).toBe(true);
+    expect(isModelId('llama-3.1')).toBe(true);
+  });
+
+  it('getModel throws for prototype-key-shaped ids', () => {
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    expect(() => getModel('__proto__' as any)).toThrow(/Unknown model/);
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    expect(() => getModel('toString' as any)).toThrow(/Unknown model/);
+  });
+
+  it('compare surfaces a clean error for prototype-key-shaped model ids', async () => {
+    // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+    await expect(compare('hi', { models: ['__proto__' as any] })).rejects.toThrow(/Unknown model/);
   });
 });

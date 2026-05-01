@@ -70,7 +70,7 @@
     "format": "biome format --write src test scripts",
     "bench": "tsx scripts/bench.ts",
     "sync-pricing": "tsx scripts/sync-pricing.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run lint && npm test && npm run build"
   },
   "dependencies": {
     "@anthropic-ai/tokenizer": "^0.0.4",

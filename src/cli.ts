@@ -75,7 +75,7 @@ cli
   .option('--exact', 'Restrict to families with exact local tokenizers')
   .action(async (text: string, opts: { context?: string; exact?: boolean }) => {
     const result = await cheapestThatFits(text, {
-      needContext: opts.context ? parseSize(opts.context) : undefined,
+      needContext: parsePositiveSize(opts.context, '--context'),
       mustBeExact: !!opts.exact,
     });
     console.log(pc.bold(`Cheapest: ${pc.green(result.model)}`));
@@ -90,6 +90,13 @@ cli
 
 cli.help();
 cli.version(getPkgVersion());
+
+process.on('unhandledRejection', (err: unknown) => {
+  const msg = err instanceof Error ? err.message : String(err);
+  console.error(pc.red(msg));
+  process.exit(1);
+});
+
 cli.parse();
 
 interface CliOpts {
@@ -131,10 +138,14 @@ function resolveModels(opts: { models?: string; all?: boolean }): ModelId[] {
 }
 
 function parseRate(s?: string): number | undefined {
+  return parsePositiveSize(s, '--calls-per-month');
+}
+
+function parsePositiveSize(s: string | undefined, label: string): number | undefined {
   if (!s) return undefined;
   const n = parseSize(s);
   if (!Number.isFinite(n) || n <= 0) {
-    console.error(pc.red(`Invalid --calls-per-month: "${s}"`));
+    console.error(pc.red(`Invalid ${label}: "${s}"`));
     process.exit(1);
   }
   return n;
