@@ -140,4 +140,35 @@ describe('cli', () => {
     expect(r.status).not.toBe(0);
     expect(r.stderr).toContain('Unknown model');
   });
+
+  it('rejects an unknown global option without dumping the bundled source', () => {
+    const r = run(['--bogus-flag', 'hi']);
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toContain('Unknown option');
+    // No minified bundled source leaked, no Node stack frames
+    expect(r.stderr.length).toBeLessThan(500);
+    expect(r.stderr).not.toMatch(/checkUnknownOptions|runMatchedCommand|node:internal/);
+  });
+
+  it('rejects an unknown subcommand option without dumping the bundled source', () => {
+    const r = run(['samples', '--bogus-flag']);
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toContain('Unknown option');
+    expect(r.stderr.length).toBeLessThan(500);
+  });
+
+  it('cheapest accepts --no-color', () => {
+    const r = run(['cheapest', 'hello world', '--no-color']);
+    expect(r.status).toBe(0);
+    expect(r.stdout).toMatch(/^Cheapest: /);
+    // No ANSI escapes
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: stripping ANSI escape sequences
+    expect(r.stdout).not.toMatch(/\x1b\[/);
+  });
+
+  it('cheapest caps savingsVs display at 99% (never reads as "free")', () => {
+    const r = run(['cheapest', 'hello world', '--no-color']);
+    expect(r.status).toBe(0);
+    expect(r.stdout).not.toContain('100% cheaper');
+  });
 });

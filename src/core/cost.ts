@@ -32,8 +32,8 @@ export async function cheapestThatFits(
       const info = getModel(id);
       if (opts.mustBeExact && info.accuracy !== 'exact') return null;
       if (info.selfHosted) return null;
-      const tokens = await countTokens(text, id);
       if (opts.needContext != null && info.contextWindow < opts.needContext) return null;
+      const tokens = await countTokens(text, id);
       if (tokens > info.contextWindow) return null;
       const c1k = costPer1kCalls(tokens, info.inputPricePerMillion);
       const ctxPct = (tokens / info.contextWindow) * 100;

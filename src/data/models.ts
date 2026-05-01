@@ -66,21 +66,21 @@ function buildRegistry(): Record<ModelId, ModelInfo> {
       selfHosted: p.self_hosted ?? false,
       accuracy: ACCURACY_BY_FAMILY[family],
     };
-    return [id as ModelId, info] as const;
+    return [id as ModelId, Object.freeze(info)] as const;
   });
   return Object.fromEntries(entries) as Record<ModelId, ModelInfo>;
 }
 
-export const models: Record<ModelId, ModelInfo> = buildRegistry();
+export const models: Record<ModelId, ModelInfo> = Object.freeze(buildRegistry());
 
-export const ALL_MODELS: ModelId[] = Object.keys(models) as ModelId[];
+export const ALL_MODELS: ModelId[] = Object.freeze(Object.keys(models) as ModelId[]) as ModelId[];
 
-export const DEFAULT_MODELS: ModelId[] = [
+export const DEFAULT_MODELS: ModelId[] = Object.freeze([
   'gpt-4o',
   'claude-3.5-sonnet',
   'gemini-1.5-flash',
   'llama-3.1',
-];
+] as ModelId[]) as ModelId[];
 
 export function getModel(id: ModelId): ModelInfo {
   if (!Object.hasOwn(models, id)) throw new Error(`Unknown model: "${id}"`);

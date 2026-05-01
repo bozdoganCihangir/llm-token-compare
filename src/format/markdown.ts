@@ -29,6 +29,7 @@ export function formatMarkdown(results: CompareResult[], opts: { title?: string 
 
 function formatCost(r: CompareResult): string {
   if (r.selfHosted) return 'local';
+  if (r.costPer1kCalls === 0) return '$0';
   if (r.costPer1kCalls < 0.01) return `$${r.costPer1kCalls.toFixed(4)}`;
   if (r.costPer1kCalls < 1) return `$${r.costPer1kCalls.toFixed(3)}`;
   return `$${r.costPer1kCalls.toFixed(2)}`;

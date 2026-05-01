@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { compare, count, tokenize } from '../src/core/compare.js';
-import { getModel, isModelId } from '../src/data/models.js';
+import { ALL_MODELS, DEFAULT_MODELS, getModel, isModelId, models } from '../src/data/models.js';
 
 describe('compare', () => {
   it('returns one row per default model', async () => {
@@ -85,5 +85,37 @@ describe('model registry validation', () => {
   it('compare surfaces a clean error for prototype-key-shaped model ids', async () => {
     // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
     await expect(compare('hi', { models: ['__proto__' as any] })).rejects.toThrow(/Unknown model/);
+  });
+});
+
+describe('public exports are immutable', () => {
+  it('ALL_MODELS is frozen', () => {
+    expect(Object.isFrozen(ALL_MODELS)).toBe(true);
+    expect(() => ALL_MODELS.push('llama-3' as never)).toThrow();
+  });
+
+  it('DEFAULT_MODELS is frozen', () => {
+    expect(Object.isFrozen(DEFAULT_MODELS)).toBe(true);
+    expect(() => DEFAULT_MODELS.push('llama-3' as never)).toThrow();
+  });
+
+  it('models registry is deep-frozen (entries cannot be mutated either)', () => {
+    expect(Object.isFrozen(models)).toBe(true);
+    expect(Object.isFrozen(models['gpt-4o'])).toBe(true);
+    expect(() => {
+      // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+      (models as any)['gpt-4o'].inputPricePerMillion = 999;
+    }).toThrow();
+  });
+
+  it('default compare() result is unaffected by attempted DEFAULT_MODELS mutation', async () => {
+    try {
+      // biome-ignore lint/suspicious/noExplicitAny: validating runtime guard
+      (DEFAULT_MODELS as any).push('llama-3');
+    } catch {
+      // expected — frozen
+    }
+    const r = await compare('hi');
+    expect(r.length).toBe(4);
   });
 });

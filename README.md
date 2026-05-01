@@ -22,7 +22,7 @@ r.find((m) => m.model === 'gemini-1.5-flash')?.costAtRate;  //  6.52
 
 findings(r);
 // → [
-//   { level: 'good', text: 'Cheapest: gemini-1.5-flash — 33× less than gpt-4o' },
+//   { level: 'good', text: 'Cheapest: gemini-1.5-flash — 40× less than claude-3.5-sonnet' },
 //   { level: 'good', text: 'Most efficient: gpt-4o (4.22 chars/token)' },
 //   { level: 'info', text: 'Token-count spread of 12% across models on this text' },
 // ]
@@ -330,10 +330,10 @@ Run `npm run bench` to reproduce locally. Benched on Apple M-series, Node 20.
 
 | Sample | gpt-4o tokens | claude-3.5 tokens | gemini-1.5-flash tokens | llama-3.1 tokens |
 | --- | ---: | ---: | ---: | ---: |
-| `python` (350 chars) | 117 | 119 | 113 | 117 |
-| `korean` (171 chars) | **88** | **177** | 145 | **94** |
-| `json` (437 chars) | 155 | 161 | 150 | 155 |
-| `prose` (309 chars) | 62 | 63 | 60 | 62 |
+| `python` (350 chars) | 117 | 119 | 117 | 117 |
+| `korean` (171 chars) | **88** | **177** | 149 | **94** |
+| `json` (437 chars) | 155 | 161 | 155 | 155 |
+| `prose` (309 chars) | 62 | 63 | 62 | 62 |
 
 Korean is the killer line: same input, **2× spread** between Claude 3.5 and GPT-4o, with proportional cost impact. This is the kind of number you can only see by comparing.
 

@@ -73,17 +73,21 @@ cli
   .command('cheapest <text>', 'Find the cheapest model that fits a constraint')
   .option('-c, --context <n>', 'Required context window (e.g. 128k)')
   .option('--exact', 'Restrict to families with exact local tokenizers')
-  .action(async (text: string, opts: { context?: string; exact?: boolean }) => {
+  .option('--no-color', 'Disable colored output')
+  .action(async (text: string, opts: { context?: string; exact?: boolean; color?: boolean }) => {
     const result = await cheapestThatFits(text, {
       needContext: parsePositiveSize(opts.context, '--context'),
       mustBeExact: !!opts.exact,
     });
-    console.log(pc.bold(`Cheapest: ${pc.green(result.model)}`));
+    const c = opts.color !== false ? pc : { bold: (s: string) => s, green: (s: string) => s };
+    console.log(c.bold(`Cheapest: ${c.green(result.model)}`));
     console.log(`  $${result.costPer1kCalls.toFixed(4)} per 1,000 calls`);
     console.log(`  ${result.contextUsedPct.toFixed(2)}% of context window`);
     if (result.savingsVs) {
+      const pct = result.savingsVs.pct;
+      const display = pct >= 99 && pct < 100 ? '99' : pct.toFixed(0);
       console.log(
-        `  ${result.savingsVs.pct.toFixed(0)}% cheaper than ${result.savingsVs.model} ($${result.savingsVs.costPer1kCalls.toFixed(4)})`,
+        `  ${display}% cheaper than ${result.savingsVs.model} ($${result.savingsVs.costPer1kCalls.toFixed(4)})`,
       );
     }
   });
@@ -91,13 +95,19 @@ cli
 cli.help();
 cli.version(getPkgVersion());
 
-process.on('unhandledRejection', (err: unknown) => {
+function reportError(err: unknown): never {
   const msg = err instanceof Error ? err.message : String(err);
   console.error(pc.red(msg));
   process.exit(1);
-});
+}
 
-cli.parse();
+process.on('unhandledRejection', reportError);
+
+try {
+  cli.parse();
+} catch (err) {
+  reportError(err);
+}
 
 interface CliOpts {
   file?: string;
